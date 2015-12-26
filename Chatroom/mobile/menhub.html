@@ -1,0 +1,163 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <title></title>
+    <link href="/Content/jquery.mobile-1.4.5.min.css" rel="stylesheet" />
+    <link href="css/menhub.css" rel="stylesheet" />
+    <script src="/Scripts/jquery-2.1.3.min.js"></script>
+    <script src="/Scripts/jquery.mobile-1.4.5.min.js"></script>
+    <script src="/Scripts/knockout-3.3.0.js"></script>
+    <script src="/Scripts/jquery.signalR-2.2.0.js"></script>
+    <script src="/signalR/hubs"></script>
+    <script src="js/god.js"></script>
+</head>
+<body>
+    <div data-role="page" id="hallPage">
+        <div data-role="header" data-tap-toggle="false" data-position="fixed" id="hallHeader">
+            <h1>大厅（<span data-bind="click:debug,text:noises().length"></span>）</h1>
+            <a data-role="button" href="#menListPage" data-bind="text:'在线成员'+men().length"></a>
+            <a data-role="button" href="#noticesPage">消息（<span data-bind="text:allNoticesCount"></span>）</a>
+        </div>
+        <div data-role="content" style="position:relative;">
+            <ul class="ui-listview" data-bind="foreach:noises" id="noises">
+                <li class="ui-li-divider ui-bar-inherit">
+                    <!--ko if:sender--><!--ko with:sender-->
+                    <a class="ui-link">
+                        <span data-bind="text:displayName,click:$root.tryToLove"></span>
+                    </a>
+                    <!--/ko--><!--/ko-->
+                    <!--ko ifnot:sender-->我<!--/ko-->
+                    <span>对</span>
+                    <!--ko if:reciever--><!--ko with:reciever-->
+                    <a data-bind="text:displayName,click:$root.tryToLove"></a>
+                    <!--/ko--><!--/ko-->
+                    <!--ko ifnot:reciever-->所有人<!--/ko-->
+                    <span>说:</span>
+                    <time data-bind="text:timeText" style="font-size: xx-small;"></time>
+                </li>
+                <li><a class="ui-btn" data-bind="text:words"></a></li>
+            </ul>
+        </div>
+        <div data-role="footer" data-position="fixed" data-tap-toggle="false">
+            <table style="width: 100%">
+                <tr data-bind="visible:husbear">
+                    <td style="text-align: left;">
+                        <a data-role="button" data-rel="dialog" href="#optionsDialog">操作</a>
+                    </td>
+                    <td style="text-align: center;"><a data-role="button" data-bind="click:forget">关闭</a></td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="text" id="noisesWords" data-bind="value:words" />
+                    </td>
+                    <td style="width: 64px; text-align:center;">
+                        <a data-role="button" data-bind="click:shout">发送</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div data-role="page" id="menListPage">
+        <div data-role="header" data-tap-toggle="false" data-position="fixed">
+            <h1>在线成员</h1>
+            <a data-role="button" data-rel="back">返回</a>
+            <a data-role="button" id="toPersonalButton" href="personal.html" target="_blank">我的资料</a>
+        </div>
+        <div data-role="content">
+            <ul data-role="listview" data-bind="foreach:men" id="men" data-filter="true" data-filter-placeholder="搜索">
+                <li>
+                    <a data-bind="click:$root.tryToLove,css:{husbear:$root.isHusbear}">
+                        <img src="#" alt="" data-bind="attr:{'data-id':id}" />
+                        <h1 data-bind="text:displayName"></h1>
+                    </a>
+                    <a href="#"></a>
+                </li>
+            </ul>
+        </div>
+        <div data-role="footer" data-position="fixed" data-tap-toggle="false" data-bind="visible:husbear" style="text-align:right;">
+            <table style="width: 100%;">
+                <tr>
+                    <td style="text-align: left;">
+                        <a data-role="button" data-rel="dialog" href="#optionsDialog">操作</a>
+                    </td>
+                    <td style="width: 64px; text-align: right;">
+                        <a data-role="button" data-bind="click:forget">关闭</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div data-role="dialog" id="noticesPage">
+        <div data-role="header" data-tap-toggle="false" data-position="fixed">
+            <h1>最近联系人列表<span data-bind="visible:allNoticesCount">（<span data-bind="text:allNoticesCount"></span>条新消息）</span></h1>
+            <a data-role="button" data-rel="back">返回</a>
+            <a data-role="button" data-bind="click:clearNotices">清空</a>
+        </div>
+        <div data-role="content">
+            <ul data-role="listview" data-bind="foreach:menInContact">
+                <li data-role="list-divider" data-bind="click:$root.tryToLove">
+                    <h2 data-bind="text:name"></h2>
+                    <p style="text-align:right;"><span data-bind="text:timeText"></span></p>
+                    <span data-bind="visible:notices,text:notices" class="ui-li-count"></span>
+                </li>
+                <li data-bind="visible:$root.husbear()===$data">
+                    <a href="#conversationPage" data-bind="text:lastWords"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div data-role="dialog" id="optionsDialog">
+        <div data-role="header">
+            <h1>请选择操作</h1><a data-role="button" data-rel="back">返回</a>
+        </div>
+        <div data-role="content">
+            <a data-role="button" href="#conversationPage">私聊</a>
+            <!--ko with:husbear-->
+            <a data-role="button" class="ui-link ui-btn ui-shadow ui-corner-all" data-rel="dialog" target="_blank" href="#" data-bind="attr:{href:'him.html?him='+id}">资料</a>
+            <!--/ko-->
+            <a data-role="button" data-bind="click:ignore">屏蔽</a>
+        </div>
+    </div>
+    <div data-role="page" id="conversationPage">
+        <div data-role="header" data-tap-toggle="false" data-position="fixed">
+            <h1>
+                <!--ko with:husbear-->
+                <span data-bind="text:displayName"></span>
+                <!--/ko-->
+            </h1>
+            <a data-role="button" data-rel="back">返回</a>
+            <a data-role="button" data-rel="dialog" href="#optionsDialog">操作</a>
+        </div>
+        <div data-role="content" data-bind="with:husbear">
+            <ul class="ui-listview menhub-dialog" data-bind="foreach:conversation" id="conversation">
+                <li class="ui-li-divider ui-bar-inherit">
+                    <a class="ui-link">
+                        <!--ko if:mine-->我<!--/ko--><!--ko ifnot:mine-->他<!--/ko-->说：<time data-bind="text:'发送于：'+timeText"></time>
+                        <!--ko if:mine-->
+                        <!--<span data-bind="text:(read()?'已':'未')+'读'"></span>-->
+                        <!--/ko-->
+                    </a>
+                </li>
+                <li><a class="ui-btn"><p data-bind="text:words"></p></a></li>
+            </ul>
+        </div>
+        <div data-role="footer" data-position="fixed" data-tap-toggle="false">
+            <table style="width: 100%">
+                <tr>
+                    <td style="text-align:right;">
+                        <input type="text" id="conversationWords" value="" data-bind="value:words" />
+                    </td>
+                    <td style="width: 64px; text-align:center;">
+                        <a data-role="button" data-bind="click:speak">发送</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <script src="js/menhub.js"></script>
+    <script src="js/menhubExtensions.js"></script>
+    <script src="js/menhubPreparation.js"></script>
+</body>
+</html>

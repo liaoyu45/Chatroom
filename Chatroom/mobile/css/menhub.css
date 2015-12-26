@@ -1,0 +1,18 @@
+﻿.husbear {
+    animation: husbear 1s ease 1 forwards;
+    background-image: linear-gradient(90deg,#ddd,#888);
+}
+
+@keyframes husbear {
+    to {
+        background-image: linear-gradient(90deg,#888,#ddd);
+        color: #fff;
+    }
+}
+.wordsBottom {
+    height: 1px;
+    margin: 0;
+    border: 0;
+    padding: 0;
+    width: 100%;
+}

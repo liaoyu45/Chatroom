@@ -1,0 +1,74 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <title>个人资料</title>
+    <link href="/Content/jquery.mobile-1.4.5.min.css" rel="stylesheet" />
+    <script src="/Scripts/jquery-2.1.3.min.js"></script>
+    <script src="/Scripts/jquery.mobile-1.4.5.min.js"></script>
+    <script src="/Scripts/jquery.form.min.js"></script>
+    <script src="/Scripts/knockout-3.3.0.js"></script>
+    <script src="js/god.js"></script>
+</head>
+<body>
+    <div data-role="page" id="abountMe">
+        <div data-role="header">
+            <a data-role="button" href="javascript:history.back();window.close();">返回</a>
+            <a data-role="button" data-bind="click:reset">重置</a>
+            <h1>个人资料</h1>
+        </div>
+        <div data-role="content">
+            <form method="post" action="/LoveShop.ashx?serverMethod=updateMyData" id="dataForm">
+                <div data-role="fieldcontain">
+                    <label for="birthday">出生年份：</label>
+                    <input type="date" id="birthday" name="Birthday" value="" data-bind="value:Birthday" />
+                </div>
+                <div data-role="fieldcontain">
+                    <label for="height">身高：</label>
+                    <input type="text" id="height" name="Height" value="" data-bind="value:Height" />
+                </div>
+                <div data-role="fieldcontain">
+                    <label for="weight">体重：</label>
+                    <input type="text" id="weight" name="Weight" value="" data-bind="value:Weight" />
+                </div>
+                <div data-role="fieldcontain">
+                    <label for="charactor">角色：</label>
+                    <input type="text" id="charactor" name="Charactor" value="" data-bind="value:Charactor" />
+                </div>
+                <div data-role="fieldcontain">
+                    <label for="name">昵称：</label>
+                    <input type="text" id="name" name="Name" value="" data-bind="value:Name" />
+                </div>
+                <div data-role="fieldcontain">
+                    <label for="introduce">自我介绍：</label>
+                    <input type="text" id="introduce" name="Introduce" value="" data-bind="value:Introduce" />
+                </div>
+                <div data-role="fieldcontain">
+                    <label for="taste">喜欢：</label>
+                    <input type="text" id="taste" name="Taste" value="" data-bind="value:Taste" />
+                </div>
+                <div data-role="fieldcontain">
+                    <label for="filter">不喜欢：</label>
+                    <input type="text" id="filter" name="Filter" value="" data-bind="value:Filter" />
+                </div>
+            </form>
+        </div>
+        <div data-role="footer" data-position="fixed" data-tap-toggle="false">
+            <table style="width: 100%;">
+                <tr>
+                    <td style="width: 64px; text-align: left;"><a data-role="button" id="submitButton">提交</a></td>
+                    <td style="text-align: right;">
+                        <a data-role="button" id="modifyPhoto">修改头像</a>
+                        <a data-role="button" id="viewPhoto" href="gallery.html">查看头像</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <form id="photoForm" action="/LoveShop.ashx?serverMethod=UploadPhoto" method="post" enctype="multipart/form-data" style="display: none;">
+        <input type="file" name="photo" value="photo" id="photoFile" accept="image/gif,image/png,image/jpg,image/bmp" />
+    </form>
+    <script src="js/personal.js"></script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+    <script src="../Scripts/jquery-2.1.3.js"></script>
+</head>
+<body>
+    <script type="text/javascript">
+        var iii = document.createElement("img");
+        iii.src = "/photos/1_0.gif";
+        iii.onload = function () {
+            document.title = "onlllll";
+            iii.src = "";
+        }
+        iii.onerror = function () {
+            document.title = "lkjlkjrwlkjr2342";
+            iii.src = "";
+        }
+        iii.onloadstart = function () {
+            iii.src = "";
+        }
+        iii.onabort = function () {
+            document.title += "aaaaaaaaaaaaaaaa";
+        };
+    </script>
+</body>
+</html>
