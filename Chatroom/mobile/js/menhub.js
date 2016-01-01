@@ -33,6 +33,7 @@ Message.prototype.mine = true;
 Message.prototype.timeText = "";
 Message.prototype.data = {};
 function Man(id, name, ahwc) {
+    var self = this;
     this.id = id;
     this.name = name;
     this.ahwc = ahwc;
@@ -47,6 +48,12 @@ function Man(id, name, ahwc) {
         return god.formatTime(this.lastTime());
     }, this);
     this.lastWords = ko.observable("");
+    this.photo = ko.observable("");
+    god.idIndexFile.initiate("/photos", this.id).loadImgs(function (e) {
+        self.photo(e.src);
+    }, function () {
+        self.photo("hi.jpg");
+    });
     this.addMessage = function (message, notice) {
         if (god.modes.coding) {
             message = new Message();
@@ -111,6 +118,12 @@ function BearChaser(id, key, url) {
         god.safeFunction(lonelyBoy.onNoiseGot).execute(noise);
     }
     function enter(data) {
+        var again = lonelyBoy.men().some(function (m) {
+            return m.id === data.id;
+        });
+        if (again) {
+            return;
+        }
         var man = new Man(data.id, data.name, data.ahwc);
         lonelyBoy.men.push(man);
         return man;

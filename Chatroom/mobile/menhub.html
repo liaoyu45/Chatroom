@@ -16,7 +16,7 @@
 <body>
     <div data-role="page" id="hallPage">
         <div data-role="header" data-tap-toggle="false" data-position="fixed" id="hallHeader">
-            <h1>大厅（<span data-bind="click:debug,text:noises().length"></span>）</h1>
+            <h1>大厅</h1>
             <a data-role="button" href="#menListPage" data-bind="text:'在线成员'+men().length"></a>
             <a data-role="button" href="#noticesPage">消息（<span data-bind="text:allNoticesCount"></span>）</a>
         </div>
@@ -66,13 +66,11 @@
             <a data-role="button" id="toPersonalButton" href="personal.html" target="_blank">我的资料</a>
         </div>
         <div data-role="content">
-            <ul data-role="listview" data-bind="foreach:men" id="men" data-filter="true" data-filter-placeholder="搜索">
+            <ul class="ui-listview" data-bind="foreach:men" id="men">
                 <li>
-                    <a data-bind="click:$root.tryToLove,css:{husbear:$root.isHusbear}">
-                        <img src="#" alt="" data-bind="attr:{'data-id':id}" />
-                        <h1 data-bind="text:displayName"></h1>
+                    <a class="ui-btn" data-bind="click:$root.tryToLove,css:{husbear:$root.isHusbear}">
+                        <h1 class="ui-li-heading" data-bind="text:displayName"></h1>
                     </a>
-                    <a href="#"></a>
                 </li>
             </ul>
         </div>
@@ -157,7 +155,6 @@
         </div>
     </div>
     <script src="js/menhub.js"></script>
-    <script src="js/menhubExtensions.js"></script>
     <script src="js/menhubPreparation.js"></script>
 </body>
 </html>

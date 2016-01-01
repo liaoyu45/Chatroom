@@ -273,7 +273,11 @@
                 this.execute = function () {
                     if (typeof func === "function") {
                         try {
-                            func.call(thisArg, arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6]);
+                            if (arguments.length) {
+                                func.apply(thisArg, arguments);
+                            } else {
+                                func.apply(thisArg);
+                            }
                         } catch (e) {
                         }
                     }

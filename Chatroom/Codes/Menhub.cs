@@ -28,21 +28,26 @@ namespace Chatroom {
         }
 
         private void connect() {
-            if (!Current.Login()) {
+            var c = this.Current;
+            if (!c.Login()) {
                 return;
             }
-            OnlineMan.AllMen.Add(this.Current);
+            if (OnlineMan.AllMen.All(m => m.Id != c.Id)) {
+                OnlineMan.AllMen.Add(c);
+            }
             foreach (var man in OnlineMan.AllMen) {
-                if (!this.Current.Visible(man)) {
+                if (!c.Visible(man)) {
                     continue;
                 }
-                this.Clients.Client(man.ClientID).onMember(this.Current.Data, true);
+                this.Clients.Client(man.ClientID).onMember(c.Data, true);
                 this.Clients.Caller.onMembersListting(man.Data);
             }
         }
         private OnlineMan current;
-        private OnlineMan Current {
-            get {
+        private OnlineMan Current
+        {
+            get
+            {
                 if (current != null) {
                     return current;
                 }
@@ -57,8 +62,10 @@ namespace Chatroom {
                 return current;
             }
         }
-        public IEnumerable<OnlineMan> OtherMen {
-            get {
+        public IEnumerable<OnlineMan> OtherMen
+        {
+            get
+            {
                 foreach (var man in OnlineMan.AllMen) {
                     if (this.Current.Visible(man)) {
                         yield return man;

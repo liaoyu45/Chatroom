@@ -270,8 +270,6 @@
     <Content Include="Content\jquery.mobile.theme-1.4.5.min.css" />
     <Content Include="mobile\gallery.html" />
     <Content Include="mobile\him.html" />
-    <Content Include="mobile\HtmlPage1.html" />
-    <Content Include="mobile\HtmlPage2.html" />
     <Content Include="mobile\js\Class.js" />
     <Content Include="mobile\js\entrance.js" />
     <Content Include="mobile\js\gallery.js" />
