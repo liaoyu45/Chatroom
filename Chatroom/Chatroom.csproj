@@ -48,7 +48,7 @@
     <Content Include="cv.aspx" />
     <Content Include="Global.asax" />
     <Content Include="mobile\entrance1.html" />
-    <Content Include="mobile\js\entrance1.js" />
+    <Content Include="mobile\js\entrance.js" />
     <Content Include="Scripts\jquery.nouislider.js" />
     <Content Include="Soul.ashx" />
     <Content Include="mobile\css\menhub.css" />
