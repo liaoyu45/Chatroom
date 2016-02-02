@@ -4,41 +4,43 @@ using System.IO;
 
 namespace Chatroom {
     public class LoveFactory : DbContext {
-
         public LoveFactory()
             : base("LoveFactory") {
         }
         public DbSet<Man> Men { get; set; }
-        public DbSet<Friend> Friends { get; set; }
-        public static void Dispose(Action<LoveFactory> a) {
+        public DbSet<ManInfo> ManInfos { get; set; }
+
+        public static void Using(Action<LoveFactory> a) {
             using (var f = new LoveFactory()) {
-                a(f);
+                try {
+                    a(f);
+                } catch (Exception e) {
+                    log(e);
+                    throw;
+                }
             }
         }
-        public static object Using(Func<LoveFactory, object> a) {
+        public static T Using<T>(Func<LoveFactory, T> a) {
             using (var f = new LoveFactory()) {
                 try {
                     return a(f);
                 } catch (Exception e) {
-                    using (var file = File.AppendText("/DB_error_log.txt")) {
-                        file.WriteLine(e.Message);
-                        file.WriteLine(getInner(e));
-                        file.Flush();
-                    }
-                    throw new Exception("innerError");
+                    log(e);
+                    throw;
                 }
             }
         }
+
+        private static void log(Exception e) {
+            using (var file = File.AppendText("/DB_error_log.txt")) {
+                file.WriteLine(e.Message);
+                file.WriteLine(getInner(e));
+                file.Flush();
+            }
+        }
+
         static string getInner(Exception e) {
             return e.InnerException == null ? e.Message : getInner(e.InnerException);
-        }
-    }
-    public static class Disposable {
-        public static T Dispose<D, T>(this D disposable, Func<D, T> func) where D : class, IDisposable, new() {
-            disposable = disposable ?? new D();
-            using (disposable) {
-                return func(disposable);
-            }
         }
     }
 }

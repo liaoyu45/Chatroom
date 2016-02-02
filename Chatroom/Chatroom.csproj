@@ -44,14 +44,14 @@
     <Content Include="App_Data\LoveFactory_log.ldf">
       <DependentUpon>LoveFactory.mdf</DependentUpon>
     </Content>
+    <Content Include="Content\noUiSlider\jquery.nouislider.css" />
     <Content Include="cv.aspx" />
     <Content Include="Global.asax" />
-    <Content Include="HtmlPage1.html" />
-    <Content Include="HtmlPage2.html" />
-    <Content Include="LoveShop.ashx" />
+    <Content Include="mobile\entrance1.html" />
+    <Content Include="mobile\js\entrance1.js" />
+    <Content Include="Scripts\jquery.nouislider.js" />
+    <Content Include="Soul.ashx" />
     <Content Include="mobile\css\menhub.css" />
-    <Content Include="mobile\entrance.html" />
-    <Content Include="1111.htm" />
     <None Include="Scripts\jquery-2.1.3.intellisense.js" />
     <Content Include="Content\images\ajax-loader.gif" />
     <Content Include="Content\images\icons-png\action-black.png" />
@@ -271,12 +271,10 @@
     <Content Include="mobile\gallery.html" />
     <Content Include="mobile\him.html" />
     <Content Include="mobile\js\Class.js" />
-    <Content Include="mobile\js\entrance.js" />
     <Content Include="mobile\js\gallery.js" />
     <Content Include="mobile\js\god.js" />
     <Content Include="mobile\js\him.js" />
-    <Content Include="mobile\js\JavaScript1.js" />
-    <Content Include="mobile\js\loveFactory.js" />
+    <Content Include="mobile\js\soul.js" />
     <Content Include="mobile\js\menhub.js" />
     <Content Include="mobile\js\menhubPreparation.js" />
     <Content Include="mobile\js\personal.js" />
@@ -300,10 +298,13 @@
     <Content Include="Scripts\jquery.mobile-1.4.5.min.map" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Codes\ChatException.cs" />
     <Compile Include="Codes\ClientData.cs" />
-    <Compile Include="Codes\Friend.cs" />
     <Compile Include="Codes\LoveFactory.cs" />
+    <Compile Include="Codes\LY.cs" />
     <Compile Include="Codes\Man.cs" />
+    <Compile Include="Codes\ManInfo.cs" />
+    <Compile Include="Codes\Msg.cs" />
     <Compile Include="Codes\PreApplicationStartCode.cs" />
     <Compile Include="Common\MD5.cs" />
     <Compile Include="Codes\Menhub.cs" />
@@ -322,8 +323,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="LoveShop.ashx.cs">
-      <DependentUpon>LoveShop.ashx</DependentUpon>
+    <Compile Include="Soul.ashx.cs">
+      <DependentUpon>Soul.ashx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -367,7 +368,6 @@
       <HintPath>..\packages\Microsoft.Owin.Security.3.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.7.0.1-beta3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>

@@ -17,7 +17,9 @@ namespace Chatroom {
         }
 
         static Lazy<MethodInfo[]> methods;
-        protected abstract string ServerMethod { get; }
+        protected virtual string ServerMethod {
+            get { return "serverMethod"; }
+        }
         public void ProcessRequest(HttpContext context) {
             var methodName = this.GetString(ServerMethod, @"\b[a-zA-Z][a-zA-Z0-9]+\b");
             var method = methods.Value.FirstOrDefault(m => m.Name.ToLower() == methodName.ToLower());

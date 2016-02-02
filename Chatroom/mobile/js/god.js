@@ -6,6 +6,13 @@
             coding: location.href.length == 11,
             debugging: location.href.indexOf("localhost") > 0,
         };
+        Object.defineProperty(this, "emptyFunction", {
+            get: function () {
+                return function () {
+
+                };
+            }
+        });
         this.window = (function () {
             return {
                 queryString: function (item) {
@@ -267,25 +274,21 @@
         })();
         this.safeFunction = function (func, thisArg) {
             if (!thisArg) {
-                thisArg = this.safeFunction.thisArg;
+                thisArg = window;
             }
             function safeFunctionInner() {
                 this.execute = function () {
                     if (typeof func === "function") {
                         try {
-                            if (arguments.length) {
-                                func.apply(thisArg, arguments);
-                            } else {
-                                func.apply(thisArg);
-                            }
+                            return func.apply(thisArg, arguments);
                         } catch (e) {
+                            console.log(e.message);
                         }
                     }
                 };
             }
             return new safeFunctionInner();
         };
-        this.safeFunction.thisArg = window;
         this.removeItem = function (arr, filter) {
             for (var i = arr.length - 1; i >= 0; i--) {
                 if (filter.call(arr[i], i)) {

@@ -1,20 +1,16 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Web;
 
 namespace Chatroom {
-    public partial class LoveShop : PointedMethodHttpHandler {
-        public LoveShop() {
-            this.photoFolder = HttpContext.Current.Request.MapPath("/photos/");
+    public partial class Soul : PointedMethodHttpHandler {
+        private string photoFolder {
+            get {
+                return HttpContext.Current.Request.MapPath("/photos/");
+            }
         }
-        private string photoFolder;
-        protected override string ServerMethod {
-            get { return "serverMethod"; }
-        }
-        static string sessionKey = "current";
+        const string sessionKey = "current";
         private int lonelyBoy {
             get {
                 int result;
@@ -33,7 +29,7 @@ namespace Chatroom {
         }
     }
 
-    public partial class LoveShop {
+    public partial class Soul {
         public object Login() {
             if (Global.published) {
                 if (this.lonelyBoy > 0) {
@@ -66,8 +62,8 @@ namespace Chatroom {
             using (var factory = new LoveFactory()) {
                 if (factory.Men.Any(m => m.Email == email))
                     throw this.RecordError("if (factory.Men.Any(m => m.Email == email))");
-                var man = Man.SameToLY(email, password);
-                factory.Men.Add(man);
+                var man = LY.SameToMe(email, password);
+                factory.ManInfos.Add(man);
                 factory.SaveChanges();
                 this.lonelyBoy = man.Id;
                 return this.GetProtocal();
@@ -82,19 +78,25 @@ namespace Chatroom {
                 };
             }
         }
+        public string HisName() {
+            var him = this.GetInt("him");
+            using (var factory = new LoveFactory()) {
+                var man = factory.ManInfos.Find(him);
+                return man?.Name;
+            }
+        }
         public object HisData() {
             var him = this.GetInt("him");
             using (var factory = new LoveFactory()) {
-                var man = factory.Men.Find(him);
+                var man = factory.ManInfos.Find(him);
                 var current = factory.Men.Find(this.lonelyBoy);
-                if ((current.Basterds ?? string.Empty).Split(',', ' ', '.').Contains(him.ToString())) {//TODO:Clients should make sure that this do not happen.
+                if ((current.Basterds ?? string.Empty).Split(',', ' ', '.').Contains(him.ToString())) {//TODO:Clients should make sure that this will not happen.
                     return null;
                 }
                 return new {
                     man.AHWC,
                     man.Filter,
                     man.Introduce,
-                    man.Name,
                     man.RegisterTime,
                     man.Taste,
                 };
@@ -134,7 +136,7 @@ namespace Chatroom {
             Taste = this.GetString("Taste");
             Filter = this.GetString("Filter");
             using (var f = new LoveFactory()) {
-                var man = f.Men.Find(this.lonelyBoy);
+                var man = f.ManInfos.Find(this.lonelyBoy);
                 man.Birthday = Birthday;
                 man.Height = Height;
                 man.Weight = Weight;
@@ -171,9 +173,9 @@ namespace Chatroom {
             using (var f = new LoveFactory()) {
                 f.Database.Delete();
                 f.Database.Create();
-                f.Men.Add(Man.SameToLY("liaoyu45@163.com", "qwe123")); 
-                f.Men.Add(Man.SameToLY("dddd@163.com", "qwe123"));
-                f.Men.Add(Man.SameToLY("wwww@163.com", "qwe123"));
+                f.ManInfos.Add(LY.SameToMe("liaoyu45@163.com", "qwe123"));
+                f.ManInfos.Add(LY.SameToMe("dddd@163.com", "qwe123"));
+                f.ManInfos.Add(LY.SameToMe("wwww@163.com", "qwe123"));
                 f.SaveChanges();
             }
         }

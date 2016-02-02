@@ -5,19 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <title></title>
     <link href="/Content/jquery.mobile-1.4.5.min.css" rel="stylesheet" />
-    <link href="css/menhub.css" rel="stylesheet" />
     <script src="/Scripts/jquery-2.1.3.min.js"></script>
     <script src="/Scripts/jquery.mobile-1.4.5.min.js"></script>
-    <script src="/Scripts/knockout-3.3.0.js"></script>
     <script src="/Scripts/jquery.signalR-2.2.0.js"></script>
     <script src="/signalR/hubs"></script>
+
     <script src="js/god.js"></script>
+    <script src="js/soul.js"></script>
+    <link href="css/menhub.css" rel="stylesheet" />
+
+    <script src="/Scripts/knockout-3.3.0.js"></script>
+
+    <link href="/Content/noUiSlider/jquery.nouislider.css" rel="stylesheet" />
+    <script src="/Scripts/jquery.nouislider.js"></script>
 </head>
 <body>
     <div data-role="page" id="hallPage">
         <div data-role="header" data-tap-toggle="false" data-position="fixed" id="hallHeader">
-            <h1>大厅</h1>
-            <a data-role="button" href="#menListPage" data-bind="text:'在线成员'+men().length"></a>
+            <h1 data-bind="click:clearUnreadNoises,text:'在线成员'+men().length">大厅</h1>
+            <a data-role="button" data-bind="attr:{href:husbear()?'#himPage':'#statisticsPage'}">查看</a>
             <a data-role="button" href="#noticesPage">消息（<span data-bind="text:allNoticesCount"></span>）</a>
         </div>
         <div data-role="content" style="position:relative;">
@@ -25,13 +31,13 @@
                 <li class="ui-li-divider ui-bar-inherit">
                     <!--ko if:sender--><!--ko with:sender-->
                     <a class="ui-link">
-                        <span data-bind="text:displayName,click:$root.tryToLove"></span>
+                        <span data-bind="text:name,click:$root.tryToLove"></span>
                     </a>
                     <!--/ko--><!--/ko-->
                     <!--ko ifnot:sender-->我<!--/ko-->
                     <span>对</span>
                     <!--ko if:reciever--><!--ko with:reciever-->
-                    <a data-bind="text:displayName,click:$root.tryToLove"></a>
+                    <a data-bind="text:name,click:$root.tryToLove"></a>
                     <!--/ko--><!--/ko-->
                     <!--ko ifnot:reciever-->所有人<!--/ko-->
                     <span>说:</span>
@@ -44,7 +50,7 @@
             <table style="width: 100%">
                 <tr data-bind="visible:husbear">
                     <td style="text-align: left;">
-                        <a data-role="button" data-rel="dialog" href="#optionsDialog">操作</a>
+                        <a data-role="button" data-rel="dialog" href="#conversationPage">聊天</a>
                     </td>
                     <td style="text-align: center;"><a data-role="button" data-bind="click:forget">关闭</a></td>
                 </tr>
@@ -59,70 +65,29 @@
             </table>
         </div>
     </div>
-    <div data-role="page" id="menListPage">
-        <div data-role="header" data-tap-toggle="false" data-position="fixed">
-            <h1>在线成员</h1>
-            <a data-role="button" data-rel="back">返回</a>
-            <a data-role="button" id="toPersonalButton" href="personal.html" target="_blank">我的资料</a>
-        </div>
-        <div data-role="content">
-            <ul class="ui-listview" data-bind="foreach:men" id="men">
-                <li>
-                    <a class="ui-btn" data-bind="click:$root.tryToLove,css:{husbear:$root.isHusbear}">
-                        <h1 class="ui-li-heading" data-bind="text:displayName"></h1>
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <div data-role="footer" data-position="fixed" data-tap-toggle="false" data-bind="visible:husbear" style="text-align:right;">
-            <table style="width: 100%;">
-                <tr>
-                    <td style="text-align: left;">
-                        <a data-role="button" data-rel="dialog" href="#optionsDialog">操作</a>
-                    </td>
-                    <td style="width: 64px; text-align: right;">
-                        <a data-role="button" data-bind="click:forget">关闭</a>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </div>
-    <div data-role="dialog" id="noticesPage">
+    <div data-role="page" id="noticesPage">
         <div data-role="header" data-tap-toggle="false" data-position="fixed">
             <h1>最近联系人列表<span data-bind="visible:allNoticesCount">（<span data-bind="text:allNoticesCount"></span>条新消息）</span></h1>
             <a data-role="button" data-rel="back">返回</a>
             <a data-role="button" data-bind="click:clearNotices">清空</a>
         </div>
         <div data-role="content">
-            <ul data-role="listview" data-bind="foreach:menInContact">
-                <li data-role="list-divider" data-bind="click:$root.tryToLove">
+            <ul class="ui-listview" data-bind="foreach:menInContact">
+                <li class="ui-li-divider ui-bar-inherit ui-first-child" role="heading" data-bind="click:$root.tryToLove">
                     <h2 data-bind="text:name"></h2>
-                    <p style="text-align:right;"><span data-bind="text:timeText"></span></p>
                     <span data-bind="visible:notices,text:notices" class="ui-li-count"></span>
                 </li>
-                <li data-bind="visible:$root.husbear()===$data">
-                    <a href="#conversationPage" data-bind="text:lastWords"></a>
+                <li data-bind="visible:isHusbear">
+                    <a data-bind="text:lastWords" href="#conversationPage"></a>
                 </li>
             </ul>
-        </div>
-    </div>
-    <div data-role="dialog" id="optionsDialog">
-        <div data-role="header">
-            <h1>请选择操作</h1><a data-role="button" data-rel="back">返回</a>
-        </div>
-        <div data-role="content">
-            <a data-role="button" href="#conversationPage">私聊</a>
-            <!--ko with:husbear-->
-            <a data-role="button" class="ui-link ui-btn ui-shadow ui-corner-all" data-rel="dialog" target="_blank" href="#" data-bind="attr:{href:'him.html?him='+id}">资料</a>
-            <!--/ko-->
-            <a data-role="button" data-bind="click:ignore">屏蔽</a>
         </div>
     </div>
     <div data-role="page" id="conversationPage">
         <div data-role="header" data-tap-toggle="false" data-position="fixed">
             <h1>
                 <!--ko with:husbear-->
-                <span data-bind="text:displayName"></span>
+                <span data-bind="text:name"></span>
                 <!--/ko-->
             </h1>
             <a data-role="button" data-rel="back">返回</a>
@@ -152,6 +117,56 @@
                     </td>
                 </tr>
             </table>
+        </div>
+    </div>
+    <div data-role="page" id="himPage">
+        <div data-role="header">
+            <h1>关于他</h1>
+            <a data-role="button" data-rel="back">返回</a>
+            <a data-role="button">屏蔽</a>
+        </div>
+        <div data-role="content">
+            <a data-role="button" href="#conversationPage">聊天</a>
+            <ul class="ui-listview">
+                <!--ko with:husbear-->
+                <li class="ui-li-divider ui-bar-inherit">昵称：<span data-bind="text:name"></span></li>
+                <!--ko with:data-->
+                <li class="ui-li-divider ui-bar-inherit">情况：<span data-bind="text:ahwc"></span></li>
+                <li class="ui-li-divider ui-bar-inherit">描述：</li>
+                <li><a data="button" data-bind="text:introduce"></a></li>
+                <li class="ui-li-divider ui-bar-inherit">寻找：</li>
+                <li><a data-role="button" data-bind="text:taste"></a></li>
+                <li class="ui-li-divider ui-bar-inherit">以下请勿扰：</li>
+                <li><a data-role="button" data-bind="text:filter"></a></li>
+                <!--/ko-->
+                <!--/ko-->
+            </ul>
+            <a data-role="button">相册</a>
+        </div>
+    </div>
+    <div data-role="page" id="statisticsPage">
+        <div class="noUi-target noUi-horizontal noUi-background" id="ageRange"></div>
+        <script type="text/javascript">
+            $("#ageRange").noUiSlider({
+                range: [20, 100],
+                start: [40, 80],
+                step: 1,
+                slide: function () {
+                    var values = $(this).val();
+                    $("span").text(
+                       values[0] +
+                       " - " +
+                       values[1]
+                    );
+                }
+            });
+        </script>
+        <div data-role="content">
+            <ul data-role="listview">
+                <li data-role="list-divider">总计人数：</li>
+                <li></li>
+                <li data-role="list-divider"></li>
+            </ul>
         </div>
     </div>
     <script src="js/menhub.js"></script>

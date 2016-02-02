@@ -2,7 +2,7 @@
 /// <reference path="/Scripts/jquery-2.1.3.js" />
 /// <reference path="god.js" />
 /// <reference path="/Scripts/knockout-3.3.0.debug.js" />
-god.request.setUrl("/LoveShop.ashx");
+god.request.setUrl("/Soul.ashx");
 var id = (function () {
     if (god.modes.debugging) {
         var fucker = god.window.queryString("fucker");

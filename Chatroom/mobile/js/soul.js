@@ -1,27 +1,22 @@
 ﻿/// <reference path="god.js" />
 /// <reference path="/Scripts/jquery-2.1.3.js" />
 (function () {
-    var url = "/LovePark.ashx?serverMethod=",
+    var url = "/Soul.ashx?serverMethod=",
         couples = [],
-        properties = ["hisData", "getPhoto", "register", "login", "logout", "updateData", "uploadPhoto"];
-    function LovePark() {
+        properties = ["hisName", "hisData", "getPhoto", "ignoreHim", "register", "login", "logout", "updateData", "uploadPhoto", "resetTestData"];
+    function Soul() {
         this.actions = {};
     }
-    window.park = new LovePark();
+    this.soul = new Soul();
     function assign(i) {
         var p = properties[i];
-        Object.defineProperty(this, p, {
-            get: function () {
-                return p[0].toUpperCase() + p.substr(1);
-            }
-        });
-        this.actions[p] = p;
+        this.actions[p] = p[0].toUpperCase() + p.substr(1);
         if (i === properties.length - 1) {
             return;
         }
         assign.call(this, i + 1);
     };
-    assign.call(park, 0);
+    assign.call(soul, 0);
     function Feeling(how, data) {
         var onSucess, onFail, onComplete,
             feeling = this,
@@ -48,27 +43,27 @@
         function setCallback(action, now) {
             action();
             if (now) {
-                feeling.love();
+                feeling.start();
                 return;
             }
             return feeling;
         }
-        this.onMarried = function (callback, now) {
+        this.done = function (callback, now) {
             return setCallback(function () {
                 onSucess = callback;
             }, now);
         };
-        this.onBrokeUp = function (callback, now) {
+        this.failed = function (callback, now) {
             return setCallback(function () {
                 onFail = callback;
             }, now);
         };
-        this.onWhatever = function (callback) {
+        this.finished = function (callback) {
             return setCallback(function () {
                 onComplete = callback;
             });
         };
-        this.love = function (settings) {
+        this.start = function (settings) {
             var request = $.ajax(url + how, getAjaxSettings(settings));
             var id = Math.random();
             couples.push({ id: id, request: request });
@@ -81,7 +76,7 @@
     if (god.modes.coding) {
         couples.push({ id: 1, request: $.ajax() });
     }
-    LovePark.prototype.forget = function (id) {
+    Soul.prototype.separate = function (id) {
         if (id === -1) {
             for (var i = 0; i < couples.length; i++) {
                 couples[i].request.abort();
@@ -98,12 +93,12 @@
         find[0].request.abort();
         couples.splice(couples.indexOf(find), 1);
     };
-    LovePark.prototype.meet = function (how, data) {
-        if (!this.hasOwnProperty(how)) {
+    Soul.prototype.prepare = function (how, data) {
+        //if (!this.hasOwnProperty(how[0].toLowerCase() + how.substr(1))) {
+        if (this.actions[how] === "undefined") {
             return;
         }
         var feeling = new Feeling(how, data);
         return feeling;
     };
 })();
-//park.meet(park.getData).onMarried().onBrokeUp().onWhatever().love();
