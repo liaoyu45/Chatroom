@@ -36,7 +36,7 @@ Message.prototype.data = {};
 function Man(id, loaded) {
     var self = this;
     this.id = id;
-    this.data = ko.observable({ ahwc: "", introduce: "", taste: "", filter: "" });
+    this.data = ko.observable({ loaded: false, ahwc: "", introduce: "", taste: "", filter: "" });
     this.name = ko.observable();
     this.enterTime = new Date();
     this.notices = ko.observable(0);
@@ -63,10 +63,10 @@ function Man(id, loaded) {
         this.lastWords(message.words);
     };
     god.safeFunction(this.onLoading, this).execute();
-    soul.prepare(soul.actions.hisName, { him: id }).done(function () {
+    soul.prepare(soul.actions.hisName, { him: id }).done(function (name) {
         self.name(name);
         god.safeFunction(loaded).execute();
-    });
+    }, true);
     if (god.modes.coding) {
         this.conversation([new Message()]);
     }
@@ -145,10 +145,26 @@ function BearChaser(id, key, url) {
         if (lonelyBoy.husbear() === man) {
             return;
         }
-        lonelyBoy.husbear(man);
-        lonelyBoy.husbear().notices(0);
         god.safeFunction(lonelyBoy.onTryingToLove).execute(man);
+        soul.prepare(soul.actions.hisData, { him: id }, man).done(function (data, man) {
+            man.data().loaded = true;
+            for (var i in data) {
+                var newI;
+                if (/[A-Z]+/.test(i)) {
+                    newI = i.toLowerCase();
+                } else {
+                    newI = i[0].toLowerCase() + i.substr(1);
+                }
+                man.data()[newI] = data[i];
+            }
+            lonelyBoy.husbear(man);
+            man.notices(0);
+            god.safeFunction(lonelyBoy.onKnownHim).execute(man);
+        }, true);
     };
+    this.menLength = ko.computed(function () {
+        return lonelyBoy.men().length;
+    });
     this.shouting = ko.computed(function () {
         var all = lonelyBoy.noises();
         if (all.length === 0) {
@@ -219,9 +235,9 @@ function BearChaser(id, key, url) {
     }
     function leave(id) {
         if (isHusbearId(id)) {
-            god.safeFunction(lonelyBoy.onHusbearLeaving).execute(lonelyBoy.husbear());
+            god.safeFunction(lonelyBoy.onHusbearLeaving).execute();
         } else {
-            god.safeFunction(lonelyBoy.onMemberMoved).execute(man, false);
+            god.safeFunction(lonelyBoy.onMemberMoved).execute(id, false);
         }
         someoneHasLeft(id);
     }
@@ -321,7 +337,7 @@ function BearChaser(id, key, url) {
         alert("服务器异常！");
     });
 }
-
+BearChaser.prototype.onKnownHim = null;
 BearChaser.prototype.onTryingToLove = null;
 BearChaser.prototype.onHusbearLeft = null;
 BearChaser.prototype.onNoiseGot = null;

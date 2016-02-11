@@ -41,9 +41,6 @@ var menhub = {
         }
     }
 };
-if (god.modes.debugging) {
-    toPersonalButton.href += "?fucker=" + menhub.id;
-}
 var lonelyBoy = new BearChaser(menhub.id, menhub.key);
 ko.applyBindings(lonelyBoy);
 lonelyBoy.onMessageGot = function (man, message) {
@@ -72,26 +69,19 @@ lonelyBoy.onMessageSent = function (msg) {
         conversation.lastElementChild.scrollIntoView();
     }
 };
-lonelyBoy.onMemberMoved = function (man, online) {
+lonelyBoy.onMemberMoved = function (id, online) {
+    var man = lonelyBoy.getMan(id);
     var message = man.data().name + (online ? "加入" : "离开") + "了聊天室";
     god.window.toast(message);
     if (online) {
 
     }
 };
-lonelyBoy.onTryingToLove = function (man) {
+lonelyBoy.onKnownHim = function () {
     menhub.focusWords();
-    soul.prepare(soul.actions.hisData, { him: id }).done(function (data) {
-        for (var i in data) {
-            var newI;
-            if (/[A-Z]+/.test(i)) {
-                newI = i.toLowerCase();
-            } else {
-                newI = i[0].toLowerCase() + i.substr(1);
-            }
-            man.data()[newI] = data[i];
-        }
-    }, true);
+};
+lonelyBoy.onTryingToLove = function () {
+    god.window.toast("正在获取资料中……");
 };
 lonelyBoy.onSilent = function () {
     menhub.focusWords();
@@ -100,13 +90,9 @@ window.closed = function () {
     lonelyBoy.exit();
 };
 lonelyBoy.onHusbearLeaving = function () {
-    var goback = setInterval(function () {
-        if (menhub.conditions.inMainPages()) {
-            clearInterval(goback);
-            return;
-        }
+    if (menhub.conditions.inConversation()) {
         history.back();
-    }, 123);
+    }
 };
 lonelyBoy.beforeIgnoring = function (basterd) {
     var yes = confirm("使用此帐号登录时，彼此将永远不再出现在对方的在线成员列表内。确定？");

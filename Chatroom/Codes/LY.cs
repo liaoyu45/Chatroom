@@ -5,6 +5,7 @@ using System.Linq;
 
 namespace Chatroom {
     static class LY {
+        internal static List<OnlineMan> AllMen = new List<OnlineMan>();
         internal static ManInfo SameToMe(string email, string password) {
             return new ManInfo {
                 Email = email,
@@ -51,7 +52,7 @@ namespace Chatroom {
                     throw new NotAuthorizedException();
                 }
                 om.Others = LY.AllMen.Where(m => LY.CheckBasterds(m, om));
-                om.Basterds = man.Basterds;
+                om.Basterds = man.Basterds ?? String.Empty;
                 if (LY.AllMen.All(m => m.Id != om.Id)) {
                     LY.AllMen.Add(om);
                 }
@@ -59,6 +60,9 @@ namespace Chatroom {
         }
         internal static bool InSight(this OnlineMan man, int id) {
             return man.Others.Any(m => m.Id == id);
+        }
+        internal static OnlineMan Someone(int id) {
+            return LY.AllMen.FirstOrDefault(m => m.Id == id);
         }
         internal static OnlineMan Someone(this OnlineMan man, int id) {
             return man.Others.FirstOrDefault(m => m.Id == id);
@@ -69,26 +73,7 @@ namespace Chatroom {
             }
             return man.Others.Where(m => m.Id != id);
         }
-        internal static List<OnlineMan> AllMen = new List<OnlineMan>();
-        internal static bool InConnection(int meId, int himId) {
-            if (meId == 0 || himId == 0) {
-                return false;
-            }
-            var me = AllMen.FirstOrDefault(m => m.Id == meId);
-            if (me == null) {
-                return false;
-            }
-            var him = AllMen.FirstOrDefault(m => m.Id == himId);
-            if (him == null) {
-                return false;
-            }
-            if (me == him) {
-                return false;
-            }
-            var result = LY.CheckBasterds(me, him);
-            return result;
-        }
-        internal static OnlineMan InConnection(OnlineMan me, int himId) {
+        internal static OnlineMan InConnection(this OnlineMan me, int himId) {
             if (me == null || himId == 0) {
                 return null;
             }

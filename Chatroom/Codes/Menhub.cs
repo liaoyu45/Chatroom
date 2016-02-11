@@ -17,18 +17,19 @@ namespace Chatroom {
             return base.OnReconnected();
         }
         public override Task OnDisconnected(bool stopCalled) {
-            LY.Leave(this.Current);
+            Current.Leave();
             foreach (var m in Current.Others) {
-                this.Clients.Client(m.ClientID).onMember(this.Current.Id, false);
+                Clients.Client(m.ClientID).onMember(Current.Id, false);
             }
             return base.OnDisconnected(stopCalled);
         }
 
         private void connect() {
-            LY.CheckLogin(this.Current);
-            foreach (var man in this.Current.Others) {
-                this.Clients.Client(man.ClientID).onMember(Current.Id, true);
-                this.Clients.Caller.onMembersListting(man.Id);
+            Current.CheckLogin();
+            Clients.Caller.onTotal(Current.Others.Count());
+            foreach (var man in Current.Others) {
+                Clients.Client(man.ClientID).onMember(Current.Id, true);
+                Clients.Caller.onMembersListting(man.Id);
             }
         }
         private OnlineMan current;
@@ -39,59 +40,81 @@ namespace Chatroom {
                 if (current != null) {
                     return current;
                 }
-                var id = int.Parse(this.Context.QueryString["id"]);
-                current = LY.AllMen.FirstOrDefault(m => m.Id == id);
+                var id = int.Parse(Context.QueryString["id"]);
+                current = LY.Someone(id);
                 if (current != null) {
                     return current;
                 }
-                var key = this.Context.QueryString["key"];
+                var key = Context.QueryString["key"];
                 current = new OnlineMan(id, key);
-                current.ClientID = this.Context.ConnectionId;
+                current.ClientID = Context.ConnectionId;
                 return current;
             }
         }
         public void Speak(dynamic message) {
-            this.Msg = new Msg() {
-                Id = message.id,
-                Words = message.words,
-                Reciever = Math.Max(int.Parse(message.reciever ?? "0"), 0),
-                Whisper = bool.Parse(message.whisper ?? "false")
-            };
-            if (this.Msg.Reciever == 0) {
+            integrateMSG(message);
+            if (Msg.Reciever == 0) {
                 toAll();
-            } else if (Current.InSight(this.Msg.Reciever)) {
-                toSomeone();
-            } else {
-                this.Clients.Caller.onNotSent(this.Msg.Id);
+                onSent();
                 return;
             }
-            this.Clients.Caller.onSent(this.Msg.Id, DateTime.Now);
-        }        
+            if (Current.InSight(Msg.Reciever)) {
+                toSomeone();
+                onSent();
+                return;
+            }
+            onNotSent(message);
+        }
+
+        private void onNotSent(dynamic message) {
+            Clients.Caller.onNotSent(message, DateTime.Now);
+        }
+
+        private void onSent() {
+            Clients.Caller.onSent(Msg.Id, DateTime.Now);
+        }
+
+        private void integrateMSG(dynamic message) {
+            int i;
+            int.TryParse((string)message.id, out i);
+            int r;
+            int.TryParse((string)message.reciever, out r);
+            bool w;
+            bool.TryParse((string)message.whisper, out w);
+            Msg = new Msg() {
+                Id = i,
+                Words = message.words,
+                Reciever = r,
+                Whisper = w
+            };
+        }
+
         private void toSomeone() {
-            var reciever = this.Current.Someone(this.Msg.Reciever);
-            this.Clients.Client(reciever.ClientID).onMessage(this.Current.Id, this.Msg.Words, this.Msg.Whisper);
-            if (!this.Msg.Whisper) {
-                this.toAll();
+            var reciever = Current.Someone(Msg.Reciever);
+            Clients.Client(reciever.ClientID).onMessage(Current.Id, Msg.Words, Msg.Whisper);
+            if (!Msg.Whisper) {
+                toAll();
             }
         }
 
         private void toAll() {
-            var connectionIds = this.Current.Others.Select(m => m.ClientID).ToList();
-            this.Clients.Clients(connectionIds).onNoise(this.Current.Id, this.Msg.Reciever, this.Msg.Words);
+            var connectionIds = Current.Others.Select(m => m.ClientID).ToList();
+            connectionIds.Remove(Current.Someone(Msg.Reciever)?.ClientID);
+            Clients.Clients(connectionIds).onNoise(Current.Id, Msg.Reciever, Msg.Words);
         }
 
         public void Ignore(int id) {
-            var basterd = LY.InConnection(this.Current, id);
+            var basterd = Current.InConnection(id);
             if (basterd == null) {
                 return;
             }
-            LY.Ignore(Current, basterd);
-            this.Clients.Caller.onIgnored(id, true);
-            this.Clients.Client(basterd.ClientID).onIgnored(this.Current.Id, false);
+            Current.Ignore(basterd);
+            Clients.Caller.onIgnored(id, true);
+            Clients.Client(basterd.ClientID).onIgnored(Current.Id, false);
         }
         public void Pulse() { }
         public void Exit() {
-            this.OnDisconnected(true);
+            OnDisconnected(true);
         }
     }
 }

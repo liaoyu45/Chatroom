@@ -19,7 +19,7 @@
         </div>
         <form action="/Entrance.ashx" method="post" data-role="content">
             <label for="email">登录名（请使用电子邮箱地址）：</label>
-            <input type="email" name="email" id="email" value="ly45@163.com" data-bind="value:email" />
+            <input type="email" name="email" id="email" value="liaoyu45@163.com" data-bind="value:email" />
             <label for="password">密码（长度为4-16位）：</label>
             <input type="password" name="password" id="password" maxlength="16" value="qwe123" data-bind="value:password" />
             <div id="registerPart" data-bind="visible:!pageAction()">
@@ -27,13 +27,14 @@
                 <input type="password" name="passwordRepeat" maxlength="16" id="passwordRepeat" value="qwe123" data-bind="value:passwordRepeat" />
             </div>
             <input type="button" value="提交" id="enter" data-bind="click:enter" />
+            <p data-bind="text:errorMessage"></p>
             <div data-bind="visible:god.modes.debugging">
                 <input type="button" name="name" value="testDDDD" data-bind="click:testDDDD" />
                 <input type="button" name="name" value="testWWWW" data-bind="click:testWWWW" />
                 <input type="button" name="name" value="resetTestData" data-bind="click:resetTestData" />
             </div>
         </form>
-        <script src="js/entrance1.js"></script>
+        <script src="js/entrance.js"></script>
     </div>
 </body>
 </html>

@@ -22,9 +22,9 @@
 <body>
     <div data-role="page" id="hallPage">
         <div data-role="header" data-tap-toggle="false" data-position="fixed" id="hallHeader">
-            <h1 data-bind="click:clearUnreadNoises,text:'在线成员'+men().length">大厅</h1>
-            <a data-role="button" data-bind="attr:{href:husbear()?'#himPage':'#statisticsPage'}">查看</a>
+            <h1 data-bind="click:clearUnreadNoises,text:'在线成员 '+menLength()+' 人'">大厅</h1>
             <a data-role="button" href="#noticesPage">消息（<span data-bind="text:allNoticesCount"></span>）</a>
+            <a class="ui-btn" data-bind="visible:husbear" href="#himPage">查看</a>
         </div>
         <div data-role="content" style="position:relative;">
             <ul class="ui-listview" data-bind="foreach:noises" id="noises">
@@ -77,8 +77,8 @@
                     <h2 data-bind="text:name"></h2>
                     <span data-bind="visible:notices,text:notices" class="ui-li-count"></span>
                 </li>
-                <li data-bind="visible:isHusbear">
-                    <a data-bind="text:lastWords" href="#conversationPage"></a>
+                <li data-bind="visible:$root.isHusbear">
+                    <a data-role="button" data-bind="text:lastWords" href="#conversationPage"></a>
                 </li>
             </ul>
         </div>
@@ -91,7 +91,7 @@
                 <!--/ko-->
             </h1>
             <a data-role="button" data-rel="back">返回</a>
-            <a data-role="button" data-rel="dialog" href="#optionsDialog">操作</a>
+            <a data-role="button" data-rel="dialog" href="#himPage">资料</a>
         </div>
         <div data-role="content" data-bind="with:husbear">
             <ul class="ui-listview menhub-dialog" data-bind="foreach:conversation" id="conversation">
@@ -123,10 +123,9 @@
         <div data-role="header">
             <h1>关于他</h1>
             <a data-role="button" data-rel="back">返回</a>
-            <a data-role="button">屏蔽</a>
+            <a data-role="button" data-bind="click:ignore">屏蔽</a>
         </div>
         <div data-role="content">
-            <a data-role="button" href="#conversationPage">聊天</a>
             <ul class="ui-listview">
                 <!--ko with:husbear-->
                 <li class="ui-li-divider ui-bar-inherit">昵称：<span data-bind="text:name"></span></li>
@@ -145,23 +144,23 @@
         </div>
     </div>
     <div data-role="page" id="statisticsPage">
-        <div class="noUi-target noUi-horizontal noUi-background" id="ageRange"></div>
-        <script type="text/javascript">
-            $("#ageRange").noUiSlider({
-                range: [20, 100],
-                start: [40, 80],
-                step: 1,
-                slide: function () {
-                    var values = $(this).val();
-                    $("span").text(
-                       values[0] +
-                       " - " +
-                       values[1]
-                    );
-                }
-            });
-        </script>
         <div data-role="content">
+            <div class="noUi-target noUi-horizontal noUi-background" id="ageRange"></div>
+            <script type="text/javascript">
+                $("#ageRange").noUiSlider({
+                    range: [20, 100],
+                    start: [40, 80],
+                    step: 1,
+                    slide: function () {
+                        var values = $(this).val();
+                        $("span").text(
+                           values[0] +
+                           " - " +
+                           values[1]
+                        );
+                    }
+                });
+            </script>
             <ul data-role="listview">
                 <li data-role="list-divider">总计人数：</li>
                 <li></li>

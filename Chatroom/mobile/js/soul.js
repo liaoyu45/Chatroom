@@ -17,7 +17,7 @@
         assign.call(this, i + 1);
     };
     assign.call(soul, 0);
-    function Feeling(how, data) {
+    function Feeling(how, data, args) {
         var onSucess, onFail, onComplete,
             feeling = this,
             settings = {
@@ -25,13 +25,19 @@
             };
         function getAjaxSettings(moreSettings) {
             if (onSucess) {
-                settings.success = onSucess;
+                settings.success = function (d) {
+                    onSucess(d, args);
+                };
             }
             if (onFail) {
-                settings.error = onFail;
+                settings.error = function (d) {
+                    onFail(d, args);
+                };
             }
             if (onComplete) {
-                settings.complete = onComplete;
+                settings.complete = function (d) {
+                    onComplete(d, args);
+                };
             }
             for (var i in moreSettings) {
                 if (!settings.hasOwnProperty(i)) {
@@ -64,6 +70,10 @@
             });
         };
         this.start = function (settings) {
+            if (god.modes.coding) {
+                onSucess({}, args) && onFail({}, args) && onComplete({}, args);
+                return;
+            }
             var request = $.ajax(url + how, getAjaxSettings(settings));
             var id = Math.random();
             couples.push({ id: id, request: request });
@@ -93,12 +103,12 @@
         find[0].request.abort();
         couples.splice(couples.indexOf(find), 1);
     };
-    Soul.prototype.prepare = function (how, data) {
+    Soul.prototype.prepare = function (how, data, args) {
         //if (!this.hasOwnProperty(how[0].toLowerCase() + how.substr(1))) {
         if (this.actions[how] === "undefined") {
             return;
         }
-        var feeling = new Feeling(how, data);
+        var feeling = new Feeling(how, data, args);
         return feeling;
     };
 })();

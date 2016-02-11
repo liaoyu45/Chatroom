@@ -44,14 +44,22 @@
     <Content Include="App_Data\LoveFactory_log.ldf">
       <DependentUpon>LoveFactory.mdf</DependentUpon>
     </Content>
+    <Content Include="bf.png" />
     <Content Include="Content\noUiSlider\jquery.nouislider.css" />
     <Content Include="cv.aspx" />
     <Content Include="Global.asax" />
-    <Content Include="mobile\entrance1.html" />
+    <Content Include="mobile\chat.html" />
+    <Content Include="mobile\entrance.html" />
+    <Content Include="mobile\HtmlPage1.html" />
+    <Content Include="mobile\js\chat.js" />
     <Content Include="mobile\js\entrance.js" />
+    <Content Include="Scripts\angular-mocks.js" />
+    <Content Include="Scripts\angular.js" />
+    <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\jquery.nouislider.js" />
     <Content Include="Soul.ashx" />
     <Content Include="mobile\css\menhub.css" />
+    <Content Include="Scripts\angular.min.js.map" />
     <None Include="Scripts\jquery-2.1.3.intellisense.js" />
     <Content Include="Content\images\ajax-loader.gif" />
     <Content Include="Content\images\icons-png\action-black.png" />
@@ -305,6 +313,7 @@
     <Compile Include="Codes\Man.cs" />
     <Compile Include="Codes\ManInfo.cs" />
     <Compile Include="Codes\Msg.cs" />
+    <Compile Include="Codes\NoInstances.cs" />
     <Compile Include="Codes\PreApplicationStartCode.cs" />
     <Compile Include="Common\MD5.cs" />
     <Compile Include="Codes\Menhub.cs" />

@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Chatroom {
     [Table("Men")]
-    public partial class Man : ContextBoundObject {
+    public partial class Man {
         [Key]
         public int Id { get; set; }
         [Required]
@@ -17,7 +17,7 @@ namespace Chatroom {
 
         public DateTime RegisterTime { get; set; }
         public DateTime ActiveTime { get; set; }
-        
+
         public bool Ignore(int basterd) {
             if ((this.Basterds ?? string.Empty).Split(',').Contains(basterd.ToString())) {
                 return false;

@@ -4,15 +4,16 @@
 function Entrance() {
     var self = this;
     this.errorMessage = ko.observable();
-    this.email = ko.observable("ly45@163.com");
+    this.email = ko.observable("liaoyu45@163.com");
     this.password = ko.observable("qwe123");
     this.passwordRepeat = ko.observable("qwe123");
     this.pageAction = ko.observable(true);
-    this.requesting = ko.observable(false);
+    var requesting = false;
     function validate() {
         var msg = (function () {
-            if (self.requesting())
+            if (requesting) {
                 return "正在请求数据中";
+            }
             if (!/^(\w)+(\.\w+)*@(\w)+((\.\w{2,3}){1,3})$/.test(self.email())) {
                 return "请填写正确的电子邮箱地址";
             }
@@ -47,7 +48,7 @@ function Entrance() {
         alert(error);
     }
     function complete() {
-        self.requesting(false);
+        requesting = false;
     }
     this.enter = function () {
         if (validate()) {
@@ -61,7 +62,7 @@ function Entrance() {
         soul.prepare(soul.actions.login, { email: "dddd@163.com", password: "qwe123" }).done(success).failed(error).finished(complete).start();
     };
     this.testWWWW = function () {
-        soul.prepare(soul.actions.login, {email:"wwww@163.com",password:"qwe123"}).done(success).failed(error).finished(complete).start();
+        soul.prepare(soul.actions.login, { email: "wwww@163.com", password: "qwe123" }).done(success).failed(error).finished(complete).start();
     };
     this.resetTestData = function () {
         soul.prepare(soul.actions.resetTestData).start();
